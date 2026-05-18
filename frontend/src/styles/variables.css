@@ -1,0 +1,111 @@
+/* CSS Variables for KrishiAI Design System */
+:root {
+  /* Primary Colors - Green (Agriculture Theme) */
+  --primary: 142 71% 45%; /* #10b981 - Emerald Green */
+  --primary-foreground: 0 0% 100%; /* White text on primary */
+  
+  /* Secondary Colors - Blue (Trust & Reliability) */
+  --secondary: 217 91% 60%; /* #3b82f6 - Blue */
+  --secondary-foreground: 0 0% 100%; /* White text on secondary */
+  
+  /* Accent Colors - Orange (Alerts & Actions) */
+  --accent: 38 92% 50%; /* #f59e0b - Amber */
+  --accent-foreground: 0 0% 100%; /* White text on accent */
+  
+  /* Support Colors */
+  --success: 142 71% 35%; /* deeper green for success badges */
+  --warning: 38 92% 45%;  /* amber for warnings */
+  --info: 201 96% 32%;    /* teal/blue for info */
+  
+  /* Destructive Colors - Red (Errors & Warnings) */
+  --destructive: 0 84% 60%; /* #ef4444 - Red */
+  --destructive-foreground: 0 0% 100%; /* White text on destructive */
+  
+  /* Background Colors */
+  --background: 0 0% 100%; /* White */
+  --foreground: 0 0% 0%; /* Pure black for text */
+  
+  /* Card Colors */
+  --card: 0 0% 100%; /* White */
+  --card-foreground: 0 0% 0%; /* Pure black */
+  
+  /* Border & Input Colors */
+  --border: 214 32% 91%; /* Light gray */
+  --input: 214 32% 91%; /* Light gray */
+  --ring: 142 71% 45%; /* Primary green for focus rings */
+  
+  /* Muted Colors */
+  --muted: 210 40% 96%; /* Very light gray */
+  --muted-foreground: 0 0% 0%; /* Muted text also pure black in light mode */
+  
+  /* Popover Colors */
+  --popover: 0 0% 100%; /* White */
+  --popover-foreground: 222 47% 11%; /* Dark gray */
+  
+  /* Border Radius */
+  --radius: 0.5rem; /* 8px */
+
+  /* Gradients */
+  --gradient-primary-from: 142 71% 45%;
+  --gradient-primary-to: 160 84% 39%;
+  --gradient-secondary-from: 217 91% 60%;
+  --gradient-secondary-to: 228 57% 45%;
+}
+
+/* Dark Mode Variables */
+.dark {
+  /* Primary stays the same */
+  --primary: 142 71% 45%;
+  --primary-foreground: 0 0% 100%;
+  
+  /* Secondary stays the same */
+  --secondary: 217 91% 60%;
+  --secondary-foreground: 0 0% 100%;
+  
+  /* Accent stays the same */
+  --accent: 38 92% 50%;
+  --accent-foreground: 0 0% 100%;
+  
+  /* Background Colors (Dark Mode) */
+  --background: 0 0% 0%; /* Pure black */
+  --foreground: 0 0% 100%; /* Pure white for text */
+  
+  /* Card Colors (Dark Mode) */
+  --card: 0 0% 0%; /* Pure black */
+  --card-foreground: 0 0% 100%; /* Pure white */
+  
+  /* Border & Input Colors (Dark Mode) */
+  --border: 217 33% 17%; /* Dark border */
+  --input: 217 33% 17%; /* Dark input */
+  --ring: 142 71% 45%; /* Primary green */
+  
+  /* Muted Colors (Dark Mode) */
+  --muted: 217 33% 17%; /* Dark muted */
+  --muted-foreground: 0 0% 100%; /* Muted text pure white in dark mode */
+  
+  /* Popover Colors (Dark Mode) */
+  --popover: 0 0% 0%; /* Pure black */
+  --popover-foreground: 0 0% 100%; /* Pure white */
+
+  /* Support Colors (Dark Mode) */
+  --success: 142 71% 38%;
+  --warning: 38 92% 48%;
+  --info: 201 96% 40%;
+
+  /* Gradients (Dark Mode) */
+  --gradient-primary-from: 142 71% 45%;
+  --gradient-primary-to: 160 84% 42%;
+  --gradient-secondary-from: 217 91% 60%;
+  --gradient-secondary-to: 228 57% 50%;
+}
+
+/* Color Utilities */
+/* These are used by Tailwind config and provide semantic color names */
+
+/* Example usage in CSS:
+  .my-element {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+*/
+
