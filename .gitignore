@@ -58,6 +58,8 @@ coverage/
 *.sqlite
 *.sqlite3
 *.db
+backend/uploads/
+uploads/
 
 # Temporary files
 tmp/

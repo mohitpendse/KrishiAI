@@ -8,6 +8,8 @@ if (apiUrl && !apiUrl.endsWith('/api')) {
 }
 const API_BASE_URL = apiUrl
 
+export { API_BASE_URL }
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

@@ -195,16 +195,17 @@ def compress_image(image_path: str, max_size_mb: float = 2.0) -> str:
 
 def translate_text(text: str, target_language: str = "hi") -> str:
     """Translate text to target language"""
+    if target_language == "en":
+        return text
+
     try:
         from googletrans import Translator
-        
-        if target_language == "en":
-            return text
-        
+
         translator = Translator()
         result = translator.translate(text, dest=target_language)
         return result.text
-        
+    except ModuleNotFoundError:
+        return text
     except Exception as e:
         logger.error(f"Error translating text: {e}")
         return text

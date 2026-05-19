@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # Navigate to backend directory
-cd /Users/mohitpendse/KrishiAI/backend
+cd "$(dirname "$0")"
 
 # Activate virtual environment
 source api/.venv/bin/activate
 
-# Install all essential dependencies
+# Install backend dependencies
 echo "📦 Installing dependencies..."
-pip install -q fastapi uvicorn sqlalchemy python-dotenv "python-jose[cryptography]" "passlib[bcrypt]" python-multipart PyJWT httpx aiofiles requests beautifulsoup4 pandas numpy aiohttp alembic pydantic-settings googletrans twilio razorpay googlemaps || true
+pip install -q -r api/requirements.txt || true
 
 # Set up database and .env file
 cd api

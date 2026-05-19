@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { AlertCircle, Droplets, Leaf, Sprout } from 'lucide-react'
-
-const API_BASE = 'http://localhost:8000/api'
+import { API_BASE_URL } from '../utils/api'
 
 interface Field {
   id: string
@@ -76,7 +75,7 @@ const CropRecommendationsPage: React.FC = () => {
     const fetchFields = async () => {
       try {
         setLoadingFields(true)
-        const response = await fetch(`${API_BASE}/fields/fields`, { headers: authHeaders() })
+        const response = await fetch(`${API_BASE_URL}/fields/fields`, { headers: authHeaders() })
         if (!response.ok) throw new Error('Failed to fetch fields')
         const data = await response.json()
         setFields(data)
@@ -105,8 +104,8 @@ const CropRecommendationsPage: React.FC = () => {
       try {
         setLoadingData(true)
         const [soilResponse, cropsResponse] = await Promise.all([
-          fetch(`${API_BASE}/soil/reports/${selectedFieldId}`, { headers: authHeaders() }),
-          fetch(`${API_BASE}/crops/recommendations?field_id=${selectedFieldId}`, { headers: authHeaders() }),
+          fetch(`${API_BASE_URL}/soil/reports/${selectedFieldId}`, { headers: authHeaders() }),
+          fetch(`${API_BASE_URL}/crops/recommendations?field_id=${selectedFieldId}`, { headers: authHeaders() }),
         ])
 
         setSoilReports(soilResponse.ok ? await soilResponse.json() : [])

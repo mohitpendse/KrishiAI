@@ -35,8 +35,10 @@ import aiohttp
 import httpx
 from datetime import datetime, timedelta
 import logging
+from dotenv import load_dotenv
 
 logger = logging.getLogger(__name__)
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 class AIEngine:
     def __init__(self):
@@ -233,6 +235,60 @@ class AIEngine:
         except Exception as e:
             logger.error(f"Error recommending crops: {e}")
             return []
+
+    async def generate_finance_chat_reply(self, query: str, context: Dict) -> str:
+        """Generate a finance assistant reply with OpenAI when configured."""
+        if not self.openai_api_key:
+            raise ValueError("OPENAI_API_KEY is not configured")
+
+        payload = {
+            "model": self.openai_model,
+            "input": [
+                {
+                    "role": "system",
+                    "content": [{
+                        "type": "input_text",
+                        "text": (
+                            "You are KrishiAI's farm finance assistant for Indian farmers. "
+                            "Give concise, practical advice using only the provided financial context. "
+                            "If the user mentions a transaction, acknowledge it and explain cash-flow impact. "
+                            "Do not provide legal, tax, or investment guarantees."
+                        ),
+                    }],
+                },
+                {
+                    "role": "user",
+                    "content": [{
+                        "type": "input_text",
+                        "text": f"User question: {query}\nFinancial context JSON: {json.dumps(context, default=str)}",
+                    }],
+                },
+            ],
+            "temperature": 0.3,
+        }
+
+        async with httpx.AsyncClient(timeout=45) as client:
+            response = await client.post(
+                "https://api.openai.com/v1/responses",
+                headers={
+                    "Authorization": f"Bearer {self.openai_api_key}",
+                    "Content-Type": "application/json",
+                },
+                json=payload,
+            )
+            response.raise_for_status()
+            data = response.json()
+
+        text = data.get("output_text") or ""
+        if text:
+            return text.strip()
+
+        chunks = []
+        for item in data.get("output", []):
+            for part in item.get("content", []):
+                if part.get("type") == "output_text":
+                    chunks.append(part.get("text", ""))
+        return "\n".join(chunks).strip()
 
     def _fallback_soil_analysis(self, source: str, note: str) -> Dict:
         return {

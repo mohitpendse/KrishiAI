@@ -3,6 +3,7 @@ import { useDropzone } from 'react-dropzone';
 import { Helmet } from 'react-helmet-async';
 import { EmptyState } from '@/components/EmptyState';
 import { getUserStorageKey } from '../utils/storage';
+import { API_BASE_URL } from '../utils/api';
 
 // Local UI stubs (dark themed) — replace with real components when available.
 const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: string; size?: string; className?: string }> = ({ children, className = '', variant, size, ...props }) => {
@@ -132,8 +133,7 @@ const initField = (field: Omit<Field, 'coordinates'>): Field => ({
 });
 
 const LandManagementPage: React.FC = () => {
-  // API base - change to your backend host if different
-  const API_BASE = 'http://localhost:8000/api';
+  const API_BASE = API_BASE_URL;
   // For inline measurement input
   const [activeMeasure, setActiveMeasure] = useState<null | { start: Point; end: Point; mid: Point }>(null);
   const [measureValue, setMeasureValue] = useState('');

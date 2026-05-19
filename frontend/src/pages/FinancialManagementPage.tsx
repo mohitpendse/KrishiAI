@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { DollarSign, TrendingUp, TrendingDown, Wheat, Bot, AlertTriangle, Check, X } from 'lucide-react';
 import { getUserStorageKey } from '../utils/storage';
+import { api } from '../utils/api';
 
 type Transaction = {
   id: string;
@@ -228,7 +229,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ snapshot, transactions, budgets
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
 
-  function sendQuery(q: string) {
+  async function sendQuery(q: string) {
     const query = q.trim();
     if (!query) return;
 
@@ -238,16 +239,32 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ snapshot, transactions, budgets
     const parsedTransaction = parseTransactionRequest(query);
     if (parsedTransaction) onAddTransaction(parsedTransaction);
 
-    const reply = generateAssistantReply(query, snapshot, transactions, budgets, loans, parsedTransaction);
-    const nextMessages = [
-      ...messages,
-      { id: String(Date.now()) + '-u', role: 'user' as const, text: query },
-      { id: String(Date.now()) + '-a', role: 'assistant' as const, text: reply },
-    ];
+    const userMessage = { id: String(Date.now()) + '-u', role: 'user' as const, text: query };
+    const messagesWithUser = [...messages, userMessage];
+    setMessages(messagesWithUser);
 
-    setMessages(nextMessages);
-    onInsight(reply);
-    setLoading(false);
+    try {
+      const response = await api.post('/financial/chat', {
+        query,
+        context: {
+          snapshot,
+          transactions,
+          budgets,
+          sales,
+          loans,
+          parsedTransaction,
+        },
+      });
+      const reply = response.data?.reply || generateAssistantReply(query, snapshot, transactions, budgets, loans, parsedTransaction);
+      setMessages([...messagesWithUser, { id: String(Date.now()) + '-a', role: 'assistant' as const, text: reply }]);
+      onInsight(reply);
+    } catch {
+      const reply = generateAssistantReply(query, snapshot, transactions, budgets, loans, parsedTransaction);
+      setMessages([...messagesWithUser, { id: String(Date.now()) + '-a', role: 'assistant' as const, text: `${reply}\n\nOpenAI is unavailable, so I used the local advisor.` }]);
+      onInsight(reply);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const quickActions = [

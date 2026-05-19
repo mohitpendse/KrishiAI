@@ -17,6 +17,14 @@ router = APIRouter()
 ai_engine = AIEngine()
 logger = logging.getLogger(__name__)
 
+def remove_uploaded_file(file_path: str) -> None:
+    """Delete uploaded source files after analysis to avoid retaining private data."""
+    try:
+        if file_path and os.path.exists(file_path):
+            os.remove(file_path)
+    except OSError as exc:
+        logger.warning("Could not delete uploaded file %s: %s", file_path, exc)
+
 def get_field_state(field: Field) -> str:
     farm_location = field.farmer.farm_location if field.farmer else None
     return farm_location.get("state", "") if isinstance(farm_location, dict) else ""
@@ -110,8 +118,11 @@ async def upload_soil_image(
             content = await file.read()
             buffer.write(content)
         
-        # Analyze image with AI
-        analysis_result = await ai_engine.analyze_soil_image(file_path)
+        # Analyze image with AI, then remove the uploaded source file.
+        try:
+            analysis_result = await ai_engine.analyze_soil_image(file_path)
+        finally:
+            remove_uploaded_file(file_path)
         
         if "error" in analysis_result:
             raise HTTPException(
@@ -125,7 +136,7 @@ async def upload_soil_image(
         soil_report = SoilReport(
             field_id=field_id,
             report_type="image",
-            file_path=file_path,
+            file_path=None,
             analysis_data=analysis_result,
             ph_level=analysis_result.get("ph_level"),
             moisture_content=analysis_result.get("moisture_content"),
@@ -221,8 +232,11 @@ async def upload_soil_video(
             content = await file.read()
             buffer.write(content)
         
-        # Analyze video with AI
-        analysis_result = await ai_engine.analyze_soil_video(file_path)
+        # Analyze video with AI, then remove the uploaded source file.
+        try:
+            analysis_result = await ai_engine.analyze_soil_video(file_path)
+        finally:
+            remove_uploaded_file(file_path)
         
         if "error" in analysis_result:
             raise HTTPException(
@@ -236,7 +250,7 @@ async def upload_soil_video(
         soil_report = SoilReport(
             field_id=field_id,
             report_type="video",
-            file_path=file_path,
+            file_path=None,
             analysis_data=analysis_result,
             ph_level=analysis_result.get("ph_level"),
             moisture_content=analysis_result.get("moisture_content"),
@@ -333,7 +347,10 @@ async def upload_lab_report(
             content = await file.read()
             buffer.write(content)
         
-        analysis_result = await ai_engine.analyze_lab_report(file_path)
+        try:
+            analysis_result = await ai_engine.analyze_lab_report(file_path)
+        finally:
+            remove_uploaded_file(file_path)
         
         if "error" in analysis_result:
             raise HTTPException(
@@ -347,7 +364,7 @@ async def upload_lab_report(
         soil_report = SoilReport(
             field_id=field_id,
             report_type="lab",
-            file_path=file_path,
+            file_path=None,
             analysis_data=analysis_result,
             ph_level=analysis_result.get("ph_level"),
             moisture_content=analysis_result.get("moisture_content"),

@@ -8,8 +8,10 @@ from decimal import Decimal
 from api.database import get_db
 from api.models.user_model import User, FarmerProfile, FinancialTransaction, Field
 from api.routes.auth import get_current_user
+from api.utils.ai_engine import AIEngine
 
 router = APIRouter()
+ai_engine = AIEngine()
 
 # Pydantic models
 class FinancialTransactionCreate(BaseModel):
@@ -40,6 +42,14 @@ class FinancialSummary(BaseModel):
     loan_amount: float
     monthly_summary: List[dict]
     category_breakdown: dict
+
+class FinanceChatRequest(BaseModel):
+    query: str
+    context: dict = {}
+
+class FinanceChatResponse(BaseModel):
+    reply: str
+    ai_enabled: bool
 
 # Routes
 @router.post("/transactions", response_model=FinancialTransactionResponse)
@@ -258,6 +268,33 @@ async def get_financial_summary(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error fetching financial summary: {str(e)}"
+        )
+
+@router.post("/chat", response_model=FinanceChatResponse)
+async def finance_chat(
+    request: FinanceChatRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Ask the OpenAI-backed finance assistant."""
+    try:
+        farmer_profile = db.query(FarmerProfile).filter(
+            FarmerProfile.user_id == current_user.id
+        ).first()
+
+        context = {
+            **request.context,
+            "user_id": str(current_user.id),
+            "farmer_profile_id": str(farmer_profile.id) if farmer_profile else None,
+        }
+        reply = await ai_engine.generate_finance_chat_reply(request.query, context)
+        return FinanceChatResponse(reply=reply, ai_enabled=True)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"AI finance chat failed: {str(e)}"
         )
 
 @router.delete("/transactions/{transaction_id}")

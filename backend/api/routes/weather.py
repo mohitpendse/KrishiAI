@@ -4,6 +4,7 @@ from typing import Optional
 import requests
 import os
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
 from api.database import get_db
 from api.models.user_model import User, FarmerProfile, WeatherData
@@ -11,6 +12,7 @@ from api.routes.auth import get_current_user
 from api.utils.helpers import get_weather_emoji
 
 router = APIRouter()
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
 # OpenWeather API configuration
 OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY')
