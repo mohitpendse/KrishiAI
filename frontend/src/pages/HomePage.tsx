@@ -16,9 +16,6 @@ import whiteLogo from '../../assets/logo-white.png'
 import whiteBanner from '../../assets/banner-white.jpg'
 import blackBanner from '../../assets/banner-black.jpg'
 import { useTheme } from '../contexts/ThemeContext'
-import youtubeIcon from '../../assets/icons/youtube.png'
-import instaIcon from '../../assets/icons/insta.png'
-import xIcon from '../../assets/icons/X.jpeg'
 
 type Feature = {
   icon: LucideIcon
@@ -76,6 +73,24 @@ const FEATURES: Feature[] = [
       'Get guidance on practices that protect the environment and improve long-term soil health.',
     iconBg: 'from-green-500/20 to-green-600/10',
     iconColor: 'text-green-600',
+  },
+]
+
+const SOCIAL_LINKS = [
+  {
+    href: 'https://www.youtube.com/@pMohit-007',
+    icon: 'https://cdn.simpleicons.org/youtube/ffffff',
+    label: 'YouTube',
+  },
+  {
+    href: 'https://www.instagram.com/t_mohit01/',
+    icon: 'https://cdn.simpleicons.org/instagram/ffffff',
+    label: 'Instagram',
+  },
+  {
+    href: 'https://x.com/Pendse_Mohit',
+    icon: 'https://cdn.simpleicons.org/x/ffffff',
+    label: 'X',
   },
 ]
 
@@ -262,27 +277,23 @@ const HomePage: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-4">
-                <img src={brandLogo} alt="KrishiAI" className="h-8 w-8" />
+                <img src={logo} alt="KrishiAI" className="h-8 w-8" />
                 <span className="text-xl font-bold">KrishiAI</span>
               </div>
               <p className="text-white/60 mb-6 max-w-md mx-auto text-sm leading-relaxed">
                 Empowering farmers with AI for sustainable and profitable agriculture.
               </p>
-              <div className="flex justify-center gap-4 mb-6">
-                {[
-                  { href: 'https://youtube.com/@KrishiAI', icon: youtubeIcon, label: 'YouTube' },
-                  { href: 'https://instagram.com/krishi.ai', icon: instaIcon, label: 'Instagram' },
-                  { href: 'https://x.com/krishi_ai', icon: xIcon, label: 'X' },
-                ].map((social) => (
+              <div className="flex justify-center gap-4 mb-8">
+                {SOCIAL_LINKS.map((social) => (
                   <a
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                    className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
                     aria-label={social.label}
                   >
-                    <img src={social.icon} alt="" className="h-7 w-7" />
+                    <img src={social.icon} alt="" className="h-5 w-5" />
                   </a>
                 ))}
               </div>
